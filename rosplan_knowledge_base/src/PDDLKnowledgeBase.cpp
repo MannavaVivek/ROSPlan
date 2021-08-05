@@ -56,7 +56,8 @@ namespace KCL_rosplan {
                     const VAL1_2::var_symbol* var = *vi;
                     diagnostic_msgs::KeyValue param;
                     param.key = var->pddl_typed_symbol::getName();
-                    param.value = var->type->getName();
+                    if (var->type != nullptr) param.value = var->type->getName();
+                    else param.value = "object";
                     formula.typed_parameters.push_back(param);
                 }
                 res.items.push_back(formula);
@@ -82,7 +83,8 @@ namespace KCL_rosplan {
                     const VAL1_2::var_symbol* var = *vi;
                     diagnostic_msgs::KeyValue param;
                     param.key = var->pddl_typed_symbol::getName();
-                    param.value = var->type->getName();
+                    if (var->type != nullptr) param.value = var->type->getName();
+                    else param.value = "object";
                     formula.typed_parameters.push_back(param);
                 }
                 res.items.push_back(formula);
@@ -107,7 +109,8 @@ namespace KCL_rosplan {
                 const VAL1_2::var_symbol* var = *vi;
                 diagnostic_msgs::KeyValue param;
                 param.key = var->pddl_typed_symbol::getName();
-                param.value = var->type->getName();
+                if (var->type != nullptr) param.value = var->type->getName();
+                else param.value = "object";
                 formula.typed_parameters.push_back(param);
             }
 
@@ -164,7 +167,7 @@ namespace KCL_rosplan {
         if (c)
         {
             for (VAL1_2::const_symbol_list::const_iterator symbolListIterator = c->begin();
-                symbolListIterator != c->end(); symbolListIterator++) {
+                 symbolListIterator != c->end(); symbolListIterator++) {
                 const VAL1_2::const_symbol *object = *symbolListIterator;
                 domain_constants[object->type->getName()].push_back(object->pddl_typed_symbol::getName());
             }
