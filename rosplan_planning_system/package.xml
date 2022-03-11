@@ -34,7 +34,7 @@
   <run_depend>rosplan_knowledge_msgs</run_depend>
   <run_depend>roslib</run_depend>
   <run_depend>rostest</run_depend>
-  <run_depend>python-yaml</run_depend> 
+  <run_depend>python3-yaml</run_depend> 
   <!-- python-yaml is only for python2, for python 3 it owul dbe python3-ymal
     It would be better if we swtich to version 2 of the package format. 
     Then we could use the following:
