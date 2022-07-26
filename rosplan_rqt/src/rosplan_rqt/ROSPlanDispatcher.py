@@ -6,7 +6,7 @@ import rospkg
 import sys
 
 from itertools import product
-from string import join, split
+# from string import join, split
 
 from std_msgs.msg import *
 from diagnostic_msgs.msg import KeyValue
@@ -61,8 +61,8 @@ class PlanViewWidget(QWidget):
                     label_list.append(param.key)
                 self._predicate_param_type_list[pred.name] = param_list
                 self._predicate_param_label_list[pred.name] = label_list
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
+        except rospy.ServiceException as e:
+            print("Service call failed: %s", e)
 
         self._handle_goal_name_changed(0)
         self._handle_fact_name_changed(0)
@@ -75,8 +75,8 @@ class PlanViewWidget(QWidget):
             for typename in resp.types:
                 self.typeComboBox.addItem(typename)
                 self._type_list.append(typename)
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
+        except rospy.ServiceException as e:
+            print("Service call failed: %s", e)
 
         # connect components
         self.planButton.clicked[bool].connect(self._handle_plan_clicked)
@@ -144,8 +144,8 @@ class PlanViewWidget(QWidget):
                 self._goal_list[goalText] = goal
                 if goalText in selected_list:
                     item.setSelected(True)
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
+        except rospy.ServiceException as e:
+            print("Service call failed: %s",e)
         # facts and functions
         rospy.wait_for_service('rosplan_knowledge_base/state/propositions')
         selected_list = []
@@ -171,8 +171,8 @@ class PlanViewWidget(QWidget):
                 self._fact_list[attributeText] = attribute
                 if attributeText in selected_list:
                     item.setSelected(True)
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
+        except rospy.ServiceException as e:
+            print("Service call failed: %s",e)
         # instances
         expanded_list = []
         root = self.instanceView.invisibleRootItem()
@@ -276,10 +276,10 @@ class PlanViewWidget(QWidget):
                 predicates_client = rospy.ServiceProxy('rosplan_knowledge_base/state/instances', GetInstanceService)
                 resp = predicates_client(param_type)
                 parameters.append(resp.instances)
-            except rospy.ServiceException, e:
-                print "Service call failed: %s"%e
+            except rospy.ServiceException as e:
+                print("Service call failed: %s",e)
         for element in product(*parameters):
-            pred = join(element, ' ')
+            pred = " ".join(element)
             combo.addItem(pred)
 
     def _handle_goal_name_changed(self, index):
@@ -299,15 +299,15 @@ class PlanViewWidget(QWidget):
             knowledge.knowledge_type = KnowledgeItem.FACT
             knowledge.attribute_name = predName
             index = 0
-            for param in split(combo.currentText()):
+            for param in combo.currentText().split():
                 pair = KeyValue()
                 pair.key = (self._predicate_param_label_list[knowledge.attribute_name])[index]
                 index = index + 1
                 pair.value = param
                 knowledge.values.append(pair)
             resp = update_client(updateType, knowledge)
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
+        except rospy.ServiceException as e:
+            print("Service call failed: %s",e)
 
     def _handle_add_goal_clicked(self, data):
         self._handle_add_button_clicked(KnowledgeUpdateServiceRequest.ADD_GOAL, self.goalNameComboBox.currentText(), self.goalComboBox)
@@ -326,8 +326,8 @@ class PlanViewWidget(QWidget):
             try:
                 update_client = rospy.ServiceProxy('rosplan_knowledge_base/update', KnowledgeUpdateService)
                 resp = update_client(updateType, removeMsgList[item.text()])
-            except rospy.ServiceException, e:
-                print "Service call failed: %s"%e
+            except rospy.ServiceException as e:
+                print("Service call failed: %s",e)
         self.refresh_model()
 
     def _handle_remove_goal_clicked(self, checked):
@@ -352,8 +352,8 @@ class PlanViewWidget(QWidget):
             knowledge.instance_type = self.typeComboBox.currentText()
             knowledge.instance_name = self.instanceNameEdit.text()
             resp = update_client(KnowledgeUpdateServiceRequest.ADD_KNOWLEDGE, knowledge)
-        except rospy.ServiceException, e:
-            print "Service call failed: %s"%e
+        except rospy.ServiceException as e:
+            print("Service call failed: %s",e)
         self.refresh_model()
 
     """
